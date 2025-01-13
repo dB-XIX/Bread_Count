@@ -257,7 +257,10 @@
                 batchWeights.sourdough["1_1/4"],
                 null
             );
-            resultHTML += `<p>Sourdough Batches: ${sourdoughResult.batches.length} batches (${JSON.stringify(sourdoughResult.batches)})</p>`;
+            resultHTML += `<p>Sourdough Batches:</p>`;
+            sourdoughResult.batches.forEach((batch, index) => {
+                resultHTML += `<p>Batch ${index + 1}: ${Object.entries(batch).map(([item, count]) => `${count} ${item}`).join(", ")}</p>`;
+            });
 
             // Jalapeño Cheddar Batches
             const jalapenoResult = calculateBatchDetails(
@@ -269,7 +272,10 @@
                 batchWeights.jalapeno.half,
                 distributeJalapenoRemaining
             );
-            resultHTML += `<p>Jalapeño Cheddar Batches: ${jalapenoResult.batches.length} batches (${JSON.stringify(jalapenoResult.batches)})</p>`;
+            resultHTML += `<p>Jalapeño Cheddar Batches:</p>`;
+            jalapenoResult.batches.forEach((batch, index) => {
+                resultHTML += `<p>Batch ${index + 1}: ${Object.entries(batch).map(([item, count]) => `${count} ${item}`).join(", ")}</p>`;
+            });
 
             // Pizza Batches
             const pizzaResult = calculateBatchDetails(
@@ -281,7 +287,10 @@
                 batchWeights.pizza,
                 distributePizzaRemaining
             );
-            resultHTML += `<p>Pizza Batches: ${pizzaResult.batches.length} batches (${JSON.stringify(pizzaResult.batches)})</p>`;
+            resultHTML += `<p>Pizza Batches:</p>`;
+            pizzaResult.batches.forEach((batch, index) => {
+                resultHTML += `<p>Batch ${index + 1}: ${Object.entries(batch).map(([item, count]) => `${count} ${item}`).join(", ")}</p>`;
+            });
 
             resultElement.innerHTML = resultHTML;
         });
