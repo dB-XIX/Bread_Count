@@ -191,12 +191,12 @@
             while (sourdoughOunces > 0) {
                 const batch = { large: 0, medium: 0, small: 0 };
                 let remaining = Math.min(sourdoughOunces, batchWeights.sourdough);
-                batch.large = Math.floor(remaining / itemWeights.largeSourdough);
-                remaining -= batch.large * itemWeights.largeSourdough;
                 batch.medium = Math.floor(remaining / itemWeights.mediumSourdough);
                 remaining -= batch.medium * itemWeights.mediumSourdough;
                 batch.small = Math.floor(remaining / itemWeights.smallSourdough);
                 remaining -= batch.small * itemWeights.smallSourdough;
+                batch.large = Math.floor(remaining / itemWeights.largeSourdough);
+                remaining -= batch.large * itemWeights.largeSourdough;
                 sourdoughOunces -= batchWeights.sourdough;
                 sourdoughBatches.push(batch);
             }
