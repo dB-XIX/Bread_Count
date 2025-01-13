@@ -180,7 +180,7 @@
                 mediumJC: buildTo.mediumJC - items.mediumJC,
             };
 
-            const calculateBatches = (totalOunces, batchOptions, itemSizes) => {
+            const calculateBatches = (totalOunces, batchOptions, itemSizes, distributeRemaining) => {
                 const batches = [];
                 for (const [batchType, ounces] of Object.entries(batchOptions)) {
                     const count = Math.floor(totalOunces / ounces);
@@ -192,16 +192,50 @@
                             batchItems[item] = itemCount;
                             remainingOunces -= itemCount * size;
                         }
+                        if (distributeRemaining && remainingOunces > 0) {
+                            distributeRemaining(batchItems, remainingOunces, itemSizes);
+                        }
                         const batchDescription = `${count} x ${batchType}: ` +
                             Object.entries(batchItems).map(([key, value]) => `${value} ${key}`).join(", ");
                         batches.push(batchDescription);
                         totalOunces %= ounces;
                     }
                 }
-                if (totalOunces > 0) {
-                    batches.push("Remaining: " + totalOunces + " oz");
-                }
                 return batches.join("<br>");
+            };
+
+            const distributeRemainingSourdough = (batchItems, remainingOunces, itemSizes) => {
+                while (remainingOunces >= Math.min(...Object.values(itemSizes))) {
+                    for (const [item, size] of Object.entries(itemSizes)) {
+                        if (remainingOunces >= size) {
+                            batchItems[item] = (batchItems[item] || 0) + 1;
+                            remainingOunces -= size;
+                        }
+                    }
+                }
+            };
+
+            const distributeRemainingJalapeno = (batchItems, remainingOunces, itemSizes) => {
+                while (remainingOunces >= Math.min(...Object.values(itemSizes))) {
+                    if (remainingOunces >= itemSizes.medium) {
+                        batchItems.medium = (batchItems.medium || 0) + 1;
+                        remainingOunces -= itemSizes.medium;
+                    } else if (remainingOunces >= itemSizes.small) {
+                        batchItems.small = (batchItems.small || 0) + 1;
+                        remainingOunces -= itemSizes.small;
+                    }
+                }
+            };
+
+            const distributeRemainingPizza = (batchItems, remainingOunces, itemSizes) => {
+                while (remainingOunces >= itemSizes.pizza10) {
+                    batchItems["10\" pizzas"] = (batchItems["10\" pizzas"] || 0) + 1;
+                    remainingOunces -= itemSizes.pizza10;
+                }
+                while (remainingOunces >= itemSizes.pizza8) {
+                    batchItems["8\" pizzas"] = (batchItems["8\" pizzas"] || 0) + 1;
+                    remainingOunces -= itemSizes.pizza8;
+                }
             };
 
             const resultElement = document.getElementById('result');
@@ -216,7 +250,7 @@
                 "small": itemWeights.smallSourdough,
                 "medium": itemWeights.mediumSourdough,
                 "large": itemWeights.largeSourdough,
-            })}</p>`;
+            }, distributeRemainingSourdough)}</p>`;
 
             // Calculate jalapeno cheddar batches
             const totalJalapenoOunces =
@@ -225,7 +259,7 @@
             resultHTML += `<p>Jalapeño Cheddar Batches: ${calculateBatches(totalJalapenoOunces, batchWeights.jalapeno, {
                 "small": itemWeights.smallJC,
                 "medium": itemWeights.mediumJC,
-            })}</p>`;
+            }, distributeRemainingJalapeno)}</p>`;
 
             // Calculate pizza batches
             const totalPizzaOunces =
@@ -234,7 +268,7 @@
             resultHTML += `<p>Pizza Batches: ${calculateBatches(totalPizzaOunces, { pizza: batchWeights.pizza }, {
                 "8\" pizzas": itemWeights.pizza8,
                 "10\" pizzas": itemWeights.pizza10,
-            })}</p>`;
+            }, distributeRemainingPizza)}</p>`;
 
             resultElement.innerHTML = resultHTML;
         });
