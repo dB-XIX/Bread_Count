@@ -195,6 +195,10 @@
                     const batch = { small: 0, medium: 0, large: 0 };
                     let remaining = batchWeight;
 
+                    batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
+                    remaining -= batch.large * itemWeights.largeSourdough;
+                    bakeNeeded.largeSourdough -= batch.large;
+
                     batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumSourdough), bakeNeeded.mediumSourdough);
                     remaining -= batch.medium * itemWeights.mediumSourdough;
                     bakeNeeded.mediumSourdough -= batch.medium;
@@ -202,10 +206,6 @@
                     batch.small = Math.min(Math.floor(remaining / itemWeights.smallSourdough), bakeNeeded.smallSourdough);
                     remaining -= batch.small * itemWeights.smallSourdough;
                     bakeNeeded.smallSourdough -= batch.small;
-
-                    batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
-                    remaining -= batch.large * itemWeights.largeSourdough;
-                    bakeNeeded.largeSourdough -= batch.large;
 
                     sourdoughOunces -= batchWeight;
                     sourdoughBatches.push({ batchType, ...batch });
