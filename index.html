@@ -159,7 +159,7 @@
         // Batch weights
         const batchWeights = {
             sourdough: { "1_1/4": 414, full: 344, half: 172 },
-            jalapeno: { half: 176 },
+            jalapeno: { half: 176, quarter: 122 },
             pizza: 237.5
         };
 
@@ -191,7 +191,7 @@
                 bakeNeeded.smallSourdough * itemWeights.smallSourdough;
 
             for (const [batchType, batchWeight] of Object.entries(batchWeights.sourdough)) {
-                while (sourdoughOunces >= batchWeight || bakeNeeded.smallSourdough > 0) {
+                while (sourdoughOunces >= batchWeight) {
                     const batch = { small: 0, medium: 0, large: 0 };
                     let remaining = batchWeight;
 
@@ -237,8 +237,7 @@
                     bakeNeeded.smallJC -= batch.small;
 
                     jalapenoOunces -= batchWeight;
-                    jalapenoBatches.push({ batchType, small: 11, medium: 22 });
-                    break;
+                    jalapenoBatches.push({ batchType, ...batch });
                 }
             }
 
