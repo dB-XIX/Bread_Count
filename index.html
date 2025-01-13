@@ -36,6 +36,12 @@
             border-radius: 5px;
         }
 
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
         button {
             width: 48%;
             padding: 10px;
@@ -54,10 +60,6 @@
                 background-color: #f44336;
                 color: white;
             }
-
-            button + button {
-                margin-left: 4%;
-            }
     </style>
 </head>
 <body>
@@ -66,53 +68,62 @@
 
         <div class="form-group">
             <label for="pizza8">8" Pizza</label>
-            <input type="number" id="pizza8" placeholder="Enter count">
+            <input type="number" id="pizza8" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="pizza10">10" Pizza</label>
-            <input type="number" id="pizza10" placeholder="Enter count">
+            <input type="number" id="pizza10" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="largeSourdough">Large Sourdough</label>
-            <input type="number" id="largeSourdough" placeholder="Enter count">
+            <input type="number" id="largeSourdough" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="mediumSourdough">Medium Sourdough</label>
-            <input type="number" id="mediumSourdough" placeholder="Enter count">
+            <input type="number" id="mediumSourdough" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="smallSourdough">Small Sourdough</label>
-            <input type="number" id="smallSourdough" placeholder="Enter count">
+            <input type="number" id="smallSourdough" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="smallJC">Small Jalapeño Cheddar</label>
-            <input type="number" id="smallJC" placeholder="Enter count">
+            <input type="number" id="smallJC" placeholder="Enter count" min="0">
         </div>
 
         <div class="form-group">
             <label for="mediumJC">Medium Jalapeño Cheddar</label>
-            <input type="number" id="mediumJC" placeholder="Enter count">
+            <input type="number" id="mediumJC" placeholder="Enter count" min="0">
         </div>
 
-        <div class="form-group">
+        <div class="button-group">
             <button id="batches">Batches</button>
             <button id="clear">Clear</button>
         </div>
     </div>
 
-    <script>// Clear button functionality
-    document.getElementById('clear').addEventListener('click', () => {
-      document.querySelectorAll('input').forEach(input => input.value = '');
-    });
+    <script>
+        // Clear button functionality
+        document.getElementById('clear').addEventListener('click', () => {
+            document.querySelectorAll('input').forEach(input => input.value = '');
+        });
 
-    // Batches button placeholder functionality
-    document.getElementById('batches').addEventListener('click', () => {
-      alert('Batches button clicked! Add your logic here.');
-    });</script>
+        // Prevent negative numbers in input fields
+        document.querySelectorAll('input[type="number"]').forEach(input => {
+            input.addEventListener('input', () => {
+                if (input.value < 0) input.value = 0;
+            });
+        });
+
+        // Batches button placeholder functionality
+        document.getElementById('batches').addEventListener('click', () => {
+            alert('Batches button clicked! Add your logic here.');
+        });
+    </script>
 </body>
 </html>
