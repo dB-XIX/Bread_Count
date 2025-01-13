@@ -159,7 +159,7 @@
         // Batch weights
         const batchWeights = {
             sourdough: { "1_1/4": 414, full: 344, half: 172 },
-            jalapeno: { half: 176, quarter: 122 },
+            jalapeno: { half: 176 },
             pizza: 237.5
         };
 
@@ -190,26 +190,35 @@
                 bakeNeeded.mediumSourdough * itemWeights.mediumSourdough +
                 bakeNeeded.smallSourdough * itemWeights.smallSourdough;
 
-            for (const [batchType, batchWeight] of Object.entries(batchWeights.sourdough)) {
-                while (sourdoughOunces >= batchWeight) {
-                    const batch = { small: 0, medium: 0, large: 0 };
-                    let remaining = batchWeight;
-
-                    batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
-                    remaining -= batch.large * itemWeights.largeSourdough;
-                    bakeNeeded.largeSourdough -= batch.large;
-
-                    batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumSourdough), bakeNeeded.mediumSourdough);
-                    remaining -= batch.medium * itemWeights.mediumSourdough;
-                    bakeNeeded.mediumSourdough -= batch.medium;
-
-                    batch.small = Math.min(Math.floor(remaining / itemWeights.smallSourdough), bakeNeeded.smallSourdough);
-                    remaining -= batch.small * itemWeights.smallSourdough;
-                    bakeNeeded.smallSourdough -= batch.small;
-
-                    sourdoughOunces -= batchWeight;
-                    sourdoughBatches.push({ batchType, ...batch });
+            while (sourdoughOunces > 0) {
+                let batchType;
+                if (sourdoughOunces >= batchWeights.sourdough.full) {
+                    batchType = "full";
+                    sourdoughOunces -= batchWeights.sourdough.full;
+                } else if (sourdoughOunces >= batchWeights.sourdough["1_1/4"]) {
+                    batchType = "1_1/4";
+                    sourdoughOunces -= batchWeights.sourdough["1_1/4"];
+                } else {
+                    batchType = "half";
+                    sourdoughOunces -= batchWeights.sourdough.half;
                 }
+
+                const batch = { small: 0, medium: 0, large: 0 };
+                let remaining = batchWeights.sourdough[batchType];
+
+                batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
+                remaining -= batch.large * itemWeights.largeSourdough;
+                bakeNeeded.largeSourdough -= batch.large;
+
+                batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumSourdough), bakeNeeded.mediumSourdough);
+                remaining -= batch.medium * itemWeights.mediumSourdough;
+                bakeNeeded.mediumSourdough -= batch.medium;
+
+                batch.small = Math.min(Math.floor(remaining / itemWeights.smallSourdough), bakeNeeded.smallSourdough);
+                remaining -= batch.small * itemWeights.smallSourdough;
+                bakeNeeded.smallSourdough -= batch.small;
+
+                sourdoughBatches.push({ batchType, ...batch });
             }
 
             sourdoughBatches.forEach((batch, i) => {
@@ -223,22 +232,20 @@
                 bakeNeeded.smallJC * itemWeights.smallJC +
                 bakeNeeded.mediumJC * itemWeights.mediumJC;
 
-            for (const [batchType, batchWeight] of Object.entries(batchWeights.jalapeno)) {
-                while (jalapenoOunces >= batchWeight) {
-                    const batch = { small: 0, medium: 0 };
-                    let remaining = batchWeight;
+            while (jalapenoOunces > 0) {
+                const batch = { small: 0, medium: 0 };
+                let remaining = batchWeights.jalapeno.half;
 
-                    batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumJC), bakeNeeded.mediumJC);
-                    remaining -= batch.medium * itemWeights.mediumJC;
-                    bakeNeeded.mediumJC -= batch.medium;
+                batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumJC), bakeNeeded.mediumJC);
+                remaining -= batch.medium * itemWeights.mediumJC;
+                bakeNeeded.mediumJC -= batch.medium;
 
-                    batch.small = Math.min(Math.floor(remaining / itemWeights.smallJC), bakeNeeded.smallJC);
-                    remaining -= batch.small * itemWeights.smallJC;
-                    bakeNeeded.smallJC -= batch.small;
+                batch.small = Math.min(Math.floor(remaining / itemWeights.smallJC), bakeNeeded.smallJC);
+                remaining -= batch.small * itemWeights.smallJC;
+                bakeNeeded.smallJC -= batch.small;
 
-                    jalapenoOunces -= batchWeight;
-                    jalapenoBatches.push({ batchType, ...batch });
-                }
+                jalapenoOunces -= batchWeights.jalapeno.half;
+                jalapenoBatches.push({ batchType: "half", ...batch });
             }
 
             jalapenoBatches.forEach((batch, i) => {
@@ -252,7 +259,7 @@
                 bakeNeeded.pizza8 * itemWeights.pizza8 +
                 bakeNeeded.pizza10 * itemWeights.pizza10;
 
-            while (pizzaOunces >= batchWeights.pizza || bakeNeeded.pizza10 > 0) {
+            while (pizzaOunces > 0) {
                 const batch = { "8": 0, "10": 0 };
                 let remaining = batchWeights.pizza;
 
