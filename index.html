@@ -196,9 +196,9 @@
                 }
 
                 const batches = [];
-                while (totalOunces >= batchWeight) {
+                while (totalOunces > 0) {
                     const batchItems = {};
-                    let remainingOunces = batchWeight;
+                    let remainingOunces = Math.min(totalOunces, batchWeight);
 
                     for (const [item, weight] of Object.entries(itemWeights)) {
                         const count = Math.floor(remainingOunces / weight);
@@ -216,7 +216,7 @@
                     totalOunces -= batchWeight;
                 }
 
-                return { batches, remainingOunces: totalOunces };
+                return { batches };
             };
 
             const distributeJalapenoRemaining = (batchItems, remainingOunces, itemWeights) => {
@@ -253,7 +253,11 @@
                     mediumSourdough: bakeNeeded.mediumSourdough,
                     smallSourdough: bakeNeeded.smallSourdough,
                 },
-                itemWeights,
+                {
+                    largeSourdough: itemWeights.largeSourdough,
+                    mediumSourdough: itemWeights.mediumSourdough,
+                    smallSourdough: itemWeights.smallSourdough,
+                },
                 batchWeights.sourdough["1_1/4"],
                 null
             );
@@ -268,7 +272,10 @@
                     smallJC: bakeNeeded.smallJC,
                     mediumJC: bakeNeeded.mediumJC,
                 },
-                itemWeights,
+                {
+                    smallJC: itemWeights.smallJC,
+                    mediumJC: itemWeights.mediumJC,
+                },
                 batchWeights.jalapeno.half,
                 distributeJalapenoRemaining
             );
@@ -283,7 +290,10 @@
                     pizza8: bakeNeeded.pizza8,
                     pizza10: bakeNeeded.pizza10,
                 },
-                itemWeights,
+                {
+                    pizza8: itemWeights.pizza8,
+                    pizza10: itemWeights.pizza10,
+                },
                 batchWeights.pizza,
                 distributePizzaRemaining
             );
