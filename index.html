@@ -36,6 +36,15 @@
             border-radius: 5px;
         }
 
+        #result {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+
         .button-group {
             display: flex;
             justify-content: space-between;
@@ -101,6 +110,8 @@
             <input type="number" id="mediumJC" placeholder="Enter count" min="0">
         </div>
 
+        <div id="result">Result will appear here</div>
+
         <div class="button-group">
             <button id="batches">Batches</button>
             <button id="clear">Clear</button>
@@ -111,6 +122,7 @@
         // Clear button functionality
         document.getElementById('clear').addEventListener('click', () => {
             document.querySelectorAll('input').forEach(input => input.value = '');
+            document.getElementById('result').innerText = 'Result will appear here';
         });
 
         // Prevent negative numbers in input fields
@@ -120,9 +132,49 @@
             });
         });
 
-        // Batches button placeholder functionality
+        // Calculate items to bake
         document.getElementById('batches').addEventListener('click', () => {
-            alert('Batches button clicked! Add your logic here.');
+            const buildTo = {
+                pizza8: 20,
+                pizza10: 40,
+                largeSourdough: 14,
+                mediumSourdough: 100,
+                smallSourdough: 80,
+                smallJC: 7,
+                mediumJC: 14,
+            };
+
+            const items = {
+                pizza8: parseInt(document.getElementById('pizza8').value) || 0,
+                pizza10: parseInt(document.getElementById('pizza10').value) || 0,
+                largeSourdough: parseInt(document.getElementById('largeSourdough').value) || 0,
+                mediumSourdough: parseInt(document.getElementById('mediumSourdough').value) || 0,
+                smallSourdough: parseInt(document.getElementById('smallSourdough').value) || 0,
+                smallJC: parseInt(document.getElementById('smallJC').value) || 0,
+                mediumJC: parseInt(document.getElementById('mediumJC').value) || 0,
+            };
+
+            const bakeNeeded = {
+                pizza8: buildTo.pizza8 - items.pizza8,
+                pizza10: buildTo.pizza10 - items.pizza10,
+                largeSourdough: buildTo.largeSourdough - items.largeSourdough,
+                mediumSourdough: buildTo.mediumSourdough - items.mediumSourdough,
+                smallSourdough: buildTo.smallSourdough - items.smallSourdough,
+                smallJC: buildTo.smallJC - items.smallJC,
+                mediumJC: buildTo.mediumJC - items.mediumJC,
+            };
+
+            // Display the results
+            const resultElement = document.getElementById('result');
+            resultElement.innerHTML = `
+            <p>8" Pizza: ${Math.max(0, bakeNeeded.pizza8)}</p>
+            <p>10" Pizza: ${Math.max(0, bakeNeeded.pizza10)}</p>
+            <p>Large Sourdough: ${Math.max(0, bakeNeeded.largeSourdough)}</p>
+            <p>Medium Sourdough: ${Math.max(0, bakeNeeded.mediumSourdough)}</p>
+            <p>Small Sourdough: ${Math.max(0, bakeNeeded.smallSourdough)}</p>
+            <p>Small Jalapeño Cheddar: ${Math.max(0, bakeNeeded.smallJC)}</p>
+            <p>Medium Jalapeño Cheddar: ${Math.max(0, bakeNeeded.mediumJC)}</p>
+          `;
         });
     </script>
 </body>
