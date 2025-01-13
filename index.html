@@ -203,13 +203,6 @@
                     sourdoughOunces -= batchWeights.sourdough.Half;
                 }
 
-                if (batchType === "Half" && sourdoughBatches.some(batch => batch.batchType === "Half")) {
-                    batchType = "Full";
-                    sourdoughOunces += batchWeights.sourdough.Half; // Remove the last half batch
-                    sourdoughOunces -= batchWeights.sourdough.Full; // Replace with a Full batch
-                    sourdoughBatches.pop();
-                }
-
                 const batch = { small: 0, medium: 0, large: 0 };
                 let remaining = batchWeights.sourdough[batchType];
 
