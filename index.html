@@ -192,12 +192,12 @@
 
             while (sourdoughOunces > 0) {
                 let batchType;
-                if (sourdoughOunces >= batchWeights.sourdough.full) {
-                    batchType = "full";
-                    sourdoughOunces -= batchWeights.sourdough.full;
-                } else if (sourdoughOunces >= batchWeights.sourdough["1_1/4"]) {
+                if (sourdoughOunces >= batchWeights.sourdough["1_1/4"]) {
                     batchType = "1_1/4";
                     sourdoughOunces -= batchWeights.sourdough["1_1/4"];
+                } else if (sourdoughOunces >= batchWeights.sourdough.full) {
+                    batchType = "full";
+                    sourdoughOunces -= batchWeights.sourdough.full;
                 } else {
                     batchType = "half";
                     sourdoughOunces -= batchWeights.sourdough.half;
@@ -233,18 +233,10 @@
                 bakeNeeded.mediumJC * itemWeights.mediumJC;
 
             while (jalapenoOunces > 0) {
-                const batch = { small: 0, medium: 0 };
-                let remaining = batchWeights.jalapeno.half;
-
-                batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumJC), bakeNeeded.mediumJC);
-                remaining -= batch.medium * itemWeights.mediumJC;
-                bakeNeeded.mediumJC -= batch.medium;
-
-                batch.small = Math.min(Math.floor(remaining / itemWeights.smallJC), bakeNeeded.smallJC);
-                remaining -= batch.small * itemWeights.smallJC;
-                bakeNeeded.smallJC -= batch.small;
-
+                const batch = { small: 11, medium: 22 };
                 jalapenoOunces -= batchWeights.jalapeno.half;
+                bakeNeeded.smallJC -= batch.small;
+                bakeNeeded.mediumJC -= batch.medium;
                 jalapenoBatches.push({ batchType: "half", ...batch });
             }
 
@@ -272,6 +264,11 @@
                 bakeNeeded.pizza10 -= batch["10"];
 
                 pizzaOunces -= batchWeights.pizza;
+
+                if (remaining > 0) {
+                    batch["10"] += Math.floor(remaining / itemWeights.pizza10);
+                }
+
                 pizzaBatches.push(batch);
             }
 
