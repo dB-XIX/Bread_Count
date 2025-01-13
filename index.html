@@ -224,7 +224,7 @@
                 bakeNeeded.mediumJC * itemWeights.mediumJC;
 
             for (const [batchType, batchWeight] of Object.entries(batchWeights.jalapeno)) {
-                while (jalapenoOunces >= batchWeight) {
+                while (jalapenoOunces >= batchWeight || batchType === "half") {
                     const batch = { small: 0, medium: 0 };
                     let remaining = batchWeight;
 
@@ -238,6 +238,7 @@
 
                     jalapenoOunces -= batchWeight;
                     jalapenoBatches.push({ batchType, ...batch });
+                    break;
                 }
             }
 
@@ -256,13 +257,13 @@
                 const batch = { "8": 0, "10": 0 };
                 let remaining = batchWeights.pizza;
 
-                batch["8"] = Math.min(Math.floor(remaining / itemWeights.pizza8), bakeNeeded.pizza8);
-                remaining -= batch["8"] * itemWeights.pizza8;
-                bakeNeeded.pizza8 -= batch["8"];
-
                 batch["10"] = Math.min(Math.floor(remaining / itemWeights.pizza10), bakeNeeded.pizza10);
                 remaining -= batch["10"] * itemWeights.pizza10;
                 bakeNeeded.pizza10 -= batch["10"];
+
+                batch["8"] = Math.min(Math.floor(remaining / itemWeights.pizza8), bakeNeeded.pizza8);
+                remaining -= batch["8"] * itemWeights.pizza8;
+                bakeNeeded.pizza8 -= batch["8"];
 
                 pizzaOunces -= batchWeights.pizza;
                 pizzaBatches.push(batch);
