@@ -221,13 +221,22 @@
                 resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
                 required.pizza8 -= batch8;
                 required.pizza10 -= batch10;
+
+                // Finish with 10" pizzas if weight remains
+                if (required.pizza8 <= 0 && remainingWeight > 0) {
+                    let extra10 = Math.ceil(remainingWeight / weights.pizza10);
+                    resultText += `Finished with ${extra10} - 10" pizzas\n`;
+                    required.pizza10 -= extra10;
+                    totalPizzaWeight -= remainingWeight;
+                }
+
                 totalPizzaWeight -= batchSizes.pizza;
             }
 
             // Correct sourdough batch logic
             let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough + required.mediumSourdough * weights.mediumSourdough + required.smallSourdough * weights.smallSourdough;
             for (let i = 0; i < batchSizes.sourdough.length; i++) {
-                while (totalSourdoughWeight >= batchSizes.sourdough[i]) {
+                while (totalSourdoughWeight >= batchSizes.sourdough[i] || (i === 1 && required.smallSourdough >= 80)) {
                     let batchLabel = i === 0 ? "1.25 Sourdough Batch" : i === 1 ? "1 Sourdough Batch" : "0.5 Sourdough Batch";
                     let batchLarge = Math.min(Math.floor(batchSizes.sourdough[i] / weights.largeSourdough), required.largeSourdough);
                     let remainingWeight = batchSizes.sourdough[i] - batchLarge * weights.largeSourdough;
@@ -239,6 +248,15 @@
                     required.largeSourdough -= batchLarge;
                     required.mediumSourdough -= batchMedium;
                     required.smallSourdough -= batchSmall;
+
+                    // Finish out remaining weight with mediums if no smalls are left
+                    if (required.smallSourdough <= 0 && remainingWeight > 0) {
+                        let extraMediums = Math.ceil(remainingWeight / weights.mediumSourdough);
+                        resultText += `Finished with ${extraMediums} medium\n`;
+                        required.mediumSourdough -= extraMediums;
+                        totalSourdoughWeight -= remainingWeight;
+                    }
+
                     totalSourdoughWeight -= batchSizes.sourdough[i];
                 }
             }
@@ -255,6 +273,15 @@
                     resultText += `${batchLabel}: ${batchSmallJC} small, ${batchMediumJC} medium\n`;
                     required.smallJC -= batchSmallJC;
                     required.mediumJC -= batchMediumJC;
+
+                    // Finish out remaining weight with mediums if no smalls are left
+                    if (required.smallJC <= 0 && remainingWeight > 0) {
+                        let extraMediumJC = Math.ceil(remainingWeight / weights.mediumJC);
+                        resultText += `Finished with ${extraMediumJC} medium\n`;
+                        required.mediumJC -= extraMediumJC;
+                        totalJalapenoWeight -= remainingWeight;
+                    }
+
                     totalJalapenoWeight -= batchSizes.jalapeno[i];
                 }
             }
