@@ -235,17 +235,19 @@
                     remainingWeight -= batchMedium * weights.mediumSourdough;
                     let batchSmall = Math.min(Math.floor(remainingWeight / weights.smallSourdough), required.smallSourdough);
 
-                    // Handle remaining weight for mediums if smalls are insufficient
-                    if (batchSmall < required.smallSourdough && i === batchSizes.sourdough.length - 1) {
-                        let remainingForMedium = required.smallSourdough - batchSmall;
-                        batchMedium += Math.ceil(remainingForMedium / weights.mediumSourdough);
-                        batchSmall = required.smallSourdough;
-                    }
-
                     resultText += `${batchLabel}: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
                     required.largeSourdough -= batchLarge;
                     required.mediumSourdough -= batchMedium;
                     required.smallSourdough -= batchSmall;
+
+                    // Finish remaining weight with mediums if no smalls are needed
+                    if (batchLabel === "0.5 Sourdough Batch" && remainingWeight > 0) {
+                        let extraMediums = Math.ceil(remainingWeight / weights.mediumSourdough);
+                        resultText += `Finished with ${extraMediums} medium\n`;
+                        required.mediumSourdough -= extraMediums;
+                        totalSourdoughWeight -= remainingWeight;
+                    }
+
                     totalSourdoughWeight -= batchSizes.sourdough[i];
                 }
             }
@@ -253,7 +255,7 @@
             // Correct jalapeno batch logic
             let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
             for (let i = 0; i < batchSizes.jalapeno.length; i++) {
-                while (totalJalapenoWeight >= batchSizes.jalapeno[i] || (i === 1 && (required.smallJC > 0 || required.mediumJC > 0))) {
+                while (totalJalapenoWeight >= batchSizes.jalapeno[i]) {
                     let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
                     let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
                     let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
