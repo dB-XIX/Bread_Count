@@ -211,13 +211,58 @@
 
             let resultText = '';
 
-            if (required.pizza10 > 0 || required.pizza8 > 0) {
-                resultText += `Pizza Batch: ${required.pizza10} - 10" pizzas\n`;
+            // Correct pizza batch logic
+            let totalPizzaWeight = required.pizza8 * weights.pizza8 + required.pizza10 * weights.pizza10;
+            while (totalPizzaWeight > 0) {
+                let batch8 = Math.min(Math.floor(batchSizes.pizza / weights.pizza8), required.pizza8);
+                let remainingWeight = batchSizes.pizza - batch8 * weights.pizza8;
+                let batch10 = Math.floor(remainingWeight / weights.pizza10);
+
+                resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
+                required.pizza8 -= batch8;
+                required.pizza10 -= batch10;
+                totalPizzaWeight -= batchSizes.pizza;
+            }
+
+            // Correct sourdough batch logic
+            let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough + required.mediumSourdough * weights.mediumSourdough + required.smallSourdough * weights.smallSourdough;
+            for (let i = 0; i < batchSizes.sourdough.length; i++) {
+                while (totalSourdoughWeight >= batchSizes.sourdough[i]) {
+                    let batchLabel = i === 0 ? "1.25 Sourdough Batch" : i === 1 ? "1 Sourdough Batch" : "0.5 Sourdough Batch";
+                    let batchLarge = Math.min(Math.floor(batchSizes.sourdough[i] / weights.largeSourdough), required.largeSourdough);
+                    let remainingWeight = batchSizes.sourdough[i] - batchLarge * weights.largeSourdough;
+                    let batchMedium = Math.min(Math.floor(remainingWeight / weights.mediumSourdough), required.mediumSourdough);
+                    remainingWeight -= batchMedium * weights.mediumSourdough;
+                    let batchSmall = Math.min(Math.floor(remainingWeight / weights.smallSourdough), required.smallSourdough);
+
+                    resultText += `${batchLabel}: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
+                    required.largeSourdough -= batchLarge;
+                    required.mediumSourdough -= batchMedium;
+                    required.smallSourdough -= batchSmall;
+                    totalSourdoughWeight -= batchSizes.sourdough[i];
+                }
+            }
+
+            // Correct jalapeno batch logic
+            let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
+            for (let i = 0; i < batchSizes.jalapeno.length; i++) {
+                while (totalJalapenoWeight >= batchSizes.jalapeno[i]) {
+                    let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
+                    let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
+                    let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
+                    let batchMediumJC = Math.min(Math.floor(remainingWeight / weights.mediumJC), required.mediumJC);
+
+                    resultText += `${batchLabel}: ${batchSmallJC} small, ${batchMediumJC} medium\n`;
+                    required.smallJC -= batchSmallJC;
+                    required.mediumJC -= batchMediumJC;
+                    totalJalapenoWeight -= batchSizes.jalapeno[i];
+                }
             }
 
             document.getElementById('result').innerText = resultText;
         });
 
+        // Print functionality
         document.getElementById('print').addEventListener('click', () => {
             const resultContent = document.getElementById('result').innerText;
             const printWindow = window.open('', '', 'height=500,width=800');
