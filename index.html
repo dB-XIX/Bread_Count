@@ -78,37 +78,37 @@
 
         <div class="form-group">
             <label for="pizza8">8" Pizza</label>
-            <input type="number" id="pizza8" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="pizza8" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="pizza10">10" Pizza</label>
-            <input type="number" id="pizza10" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="pizza10" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="largeSourdough">Large Sourdough</label>
-            <input type="number" id="largeSourdough" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="largeSourdough" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="mediumSourdough">Medium Sourdough</label>
-            <input type="number" id="mediumSourdough" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="mediumSourdough" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="smallSourdough">Small Sourdough</label>
-            <input type="number" id="smallSourdough" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="smallSourdough" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="smallJC">Small Jalapeño Cheddar</label>
-            <input type="number" id="smallJC" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="smallJC" placeholder="Enter Count" min="0">
         </div>
 
         <div class="form-group">
             <label for="mediumJC">Medium Jalapeño Cheddar</label>
-            <input type="number" id="mediumJC" placeholder="Enter count" min="0" value="0">
+            <input type="number" id="mediumJC" placeholder="Enter Count" min="0">
         </div>
 
         <div id="result">Result will appear here</div>
@@ -147,7 +147,7 @@
         };
 
         document.getElementById('clear').addEventListener('click', () => {
-            document.querySelectorAll('input').forEach(input => input.value = '0');
+            document.querySelectorAll('input').forEach(input => input.value = '');
             document.getElementById('result').innerText = 'Result will appear here';
         });
 
@@ -186,6 +186,7 @@
                 let batch8 = Math.min(Math.floor(batchSizes.pizza / weights.pizza8), required.pizza8);
                 let remainingWeight = batchSizes.pizza - batch8 * weights.pizza8;
                 let batch10 = Math.min(Math.floor(remainingWeight / weights.pizza10), required.pizza10);
+                batch10 += Math.floor(remainingWeight / weights.pizza10); // Ensure remaining weight finishes as 10"
 
                 resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
                 required.pizza8 -= batch8;
