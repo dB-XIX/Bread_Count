@@ -204,6 +204,14 @@
                     remainingWeight -= batchMedium * weights.mediumSourdough;
                     let batchSmall = Math.min(Math.floor(remainingWeight / weights.smallSourdough), required.smallSourdough);
 
+                    // Adjust to ensure small sourdoughs meet the target by selecting a larger batch if needed
+                    if (batchLabel === "0.5 Sourdough Batch" && required.smallSourdough > batchSmall) {
+                        batchLabel = "1 Sourdough Batch";
+                        batchSmall = Math.min(Math.floor(batchSizes.sourdough[1] / weights.smallSourdough), required.smallSourdough);
+                        batchMedium = 0;
+                        batchLarge = 0;
+                    }
+
                     resultText += `${batchLabel}: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
                     required.largeSourdough -= batchLarge;
                     required.mediumSourdough -= batchMedium;
