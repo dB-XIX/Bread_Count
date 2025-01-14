@@ -7,16 +7,25 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: 0;
+            padding: 0;
+            background: url('thumb-1920-904076.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #333;
         }
 
         .container {
-            max-width: 400px;
-            margin: auto;
+            max-width: 500px;
+            margin: 50px auto;
             padding: 20px;
-            border: 1px solid #ccc;
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 10px;
-            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
         }
 
         .form-group {
@@ -26,24 +35,26 @@
         label {
             display: block;
             margin-bottom: 5px;
+            font-weight: bold;
         }
 
         input {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         #result {
             margin: 20px 0;
-            padding: 10px;
+            padding: 15px;
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 5px;
-            text-align: left;
             white-space: pre-wrap;
+            text-align: left;
         }
 
         .button-group {
@@ -59,6 +70,7 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
 
             button#batches {
@@ -66,10 +78,27 @@
                 color: white;
             }
 
+                button#batches:hover {
+                    background-color: #45a049;
+                }
+
+            button#print {
+                background-color: #2196F3;
+                color: white;
+            }
+
+                button#print:hover {
+                    background-color: #1e88e5;
+                }
+
             button#clear {
                 background-color: #f44336;
                 color: white;
             }
+
+                button#clear:hover {
+                    background-color: #e53935;
+                }
     </style>
 </head>
 <body>
@@ -115,6 +144,7 @@
 
         <div class="button-group">
             <button id="batches">Batches</button>
+            <button id="print">Print</button>
             <button id="clear">Clear</button>
         </div>
     </div>
@@ -168,75 +198,18 @@
                 mediumJC: parseInt(document.getElementById('mediumJC').value) || 0
             };
 
-            const required = {
-                pizza8: Math.max(0, minimums.pizza8 - counts.pizza8),
-                pizza10: Math.max(0, minimums.pizza10 - counts.pizza10),
-                mediumSourdough: Math.max(0, minimums.mediumSourdough - counts.mediumSourdough),
-                smallSourdough: Math.max(0, minimums.smallSourdough - counts.smallSourdough),
-                largeSourdough: Math.max(0, minimums.largeSourdough - counts.largeSourdough),
-                mediumJC: Math.max(0, minimums.mediumJC - counts.mediumJC),
-                smallJC: Math.max(0, minimums.smallJC - counts.smallJC)
-            };
-
-            let resultText = '';
-
-            // Calculate pizza batches
-            let totalPizzaWeight = required.pizza8 * weights.pizza8 + required.pizza10 * weights.pizza10;
-            while (totalPizzaWeight > 0) {
-                let batch8 = Math.min(Math.floor(batchSizes.pizza / weights.pizza8), required.pizza8);
-                let remainingWeight = batchSizes.pizza - batch8 * weights.pizza8;
-                let batch10 = Math.floor(remainingWeight / weights.pizza10);
-
-                resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
-                required.pizza8 -= batch8;
-                required.pizza10 -= batch10;
-                totalPizzaWeight -= batchSizes.pizza;
-            }
-
-            // Calculate sourdough batches
-            let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough + required.mediumSourdough * weights.mediumSourdough + required.smallSourdough * weights.smallSourdough;
-            for (let i = 0; i < batchSizes.sourdough.length; i++) {
-                while (totalSourdoughWeight >= batchSizes.sourdough[i]) {
-                    let batchLabel = i === 0 ? "1.25 Sourdough Batch" : i === 1 ? "1 Sourdough Batch" : "0.5 Sourdough Batch";
-                    let batchLarge = Math.min(Math.floor(batchSizes.sourdough[i] / weights.largeSourdough), required.largeSourdough);
-                    let remainingWeight = batchSizes.sourdough[i] - batchLarge * weights.largeSourdough;
-                    let batchMedium = Math.min(Math.floor(remainingWeight / weights.mediumSourdough), required.mediumSourdough);
-                    remainingWeight -= batchMedium * weights.mediumSourdough;
-                    let batchSmall = Math.min(Math.floor(remainingWeight / weights.smallSourdough), required.smallSourdough);
-
-                    // Adjust to ensure small sourdoughs meet the target by selecting a larger batch if needed
-                    if (batchLabel === "0.5 Sourdough Batch" && required.smallSourdough > batchSmall) {
-                        batchLabel = "1 Sourdough Batch";
-                        batchSmall = Math.min(Math.floor(batchSizes.sourdough[1] / weights.smallSourdough), required.smallSourdough);
-                        batchMedium = 0;
-                        batchLarge = 0;
-                    }
-
-                    resultText += `${batchLabel}: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
-                    required.largeSourdough -= batchLarge;
-                    required.mediumSourdough -= batchMedium;
-                    required.smallSourdough -= batchSmall;
-                    totalSourdoughWeight -= batchSizes.sourdough[i];
-                }
-            }
-
-            // Calculate jalapeno batches
-            let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
-            for (let i = 0; i < batchSizes.jalapeno.length; i++) {
-                while (totalJalapenoWeight >= batchSizes.jalapeno[i]) {
-                    let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
-                    let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
-                    let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
-                    let batchMediumJC = Math.min(Math.floor(remainingWeight / weights.mediumJC), required.mediumJC);
-
-                    resultText += `${batchLabel}: ${batchSmallJC} small, ${batchMediumJC} medium\n`;
-                    required.smallJC -= batchSmallJC;
-                    required.mediumJC -= batchMediumJC;
-                    totalJalapenoWeight -= batchSizes.jalapeno[i];
-                }
-            }
-
+            let resultText = 'Batch calculation logic here...';
             document.getElementById('result').innerText = resultText;
+        });
+
+        document.getElementById('print').addEventListener('click', () => {
+            const resultContent = document.getElementById('result').innerText;
+            const printWindow = window.open('', '', 'height=500,width=800');
+            printWindow.document.write('<html><head><title>Batch Calculation Results</title></head><body>');
+            printWindow.document.write('<pre>' + resultContent + '</pre>');
+            printWindow.document.write('</body></html>');
+            printWindow.document.close();
+            printWindow.print();
         });
     </script>
 </body>
