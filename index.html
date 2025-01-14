@@ -240,8 +240,8 @@
                     required.mediumSourdough -= batchMedium;
                     required.smallSourdough -= batchSmall;
 
-                    // Finish remaining weight with mediums if no smalls are needed
-                    if (batchLabel === "0.5 Sourdough Batch" && remainingWeight > 0) {
+                    // Adjust remaining weight to mediums if batch is incomplete
+                    if (remainingWeight > 0 && batchLabel === "0.5 Sourdough Batch") {
                         let extraMediums = Math.ceil(remainingWeight / weights.mediumSourdough);
                         resultText += `Finished with ${extraMediums} medium\n`;
                         required.mediumSourdough -= extraMediums;
