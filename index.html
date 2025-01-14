@@ -252,7 +252,7 @@
             // Correct jalapeno batch logic
             let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
             for (let i = 0; i < batchSizes.jalapeno.length; i++) {
-                while (totalJalapenoWeight >= batchSizes.jalapeno[i]) {
+                while (totalJalapenoWeight >= batchSizes.jalapeno[i] || required.smallJC > 0 || required.mediumJC > 0) {
                     let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
                     let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
                     let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
@@ -272,7 +272,7 @@
         document.getElementById('print').addEventListener('click', () => {
             const resultContent = document.getElementById('result').innerText;
             const printWindow = window.open('', '', 'height=500,width=800');
-            printWindow.document.write('<html><head><title>Batch Calculation Results</title></head><body>');
+            printWindow.document.write('<html><head><title>Batch Calculation Results</title><style>body { font-size: 2em; font-family: Arial, sans-serif; }</style></head><body>');
             printWindow.document.write('<pre>' + resultContent + '</pre>');
             printWindow.document.write('</body></html>');
             printWindow.document.close();
