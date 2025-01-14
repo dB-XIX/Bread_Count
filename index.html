@@ -90,12 +90,12 @@
                 }
 
             button#print {
-                background-color: #D4A373;
+                background-color: #6B8E23;
                 color: white;
             }
 
                 button#print:hover {
-                    background-color: #C08D6E;
+                    background-color: #556B2F;
                 }
 
             button#clear {
@@ -188,12 +188,6 @@
             document.getElementById('result').innerText = 'Result will appear here';
         });
 
-        document.querySelectorAll('input[type="number"]').forEach(input => {
-            input.addEventListener('input', () => {
-                if (input.value < 0) input.value = 0;
-            });
-        });
-
         document.getElementById('batches').addEventListener('click', () => {
             const counts = {
                 pizza8: parseInt(document.getElementById('pizza8').value) || 0,
@@ -217,8 +211,7 @@
 
             let resultText = '';
 
-            // Example batch calculation logic for pizza
-            if (required.pizza10 > 0) {
+            if (required.pizza10 > 0 || required.pizza8 > 0) {
                 resultText += `Pizza Batch: ${required.pizza10} - 10" pizzas\n`;
             }
 
