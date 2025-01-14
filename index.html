@@ -234,18 +234,16 @@
                     let batchMedium = Math.min(Math.floor(remainingWeight / weights.mediumSourdough), required.mediumSourdough);
                     remainingWeight -= batchMedium * weights.mediumSourdough;
                     let batchSmall = Math.min(Math.floor(remainingWeight / weights.smallSourdough), required.smallSourdough);
+                    remainingWeight -= batchSmall * weights.smallSourdough;
+
+                    // Add any remaining weight to medium buns
+                    let extraMediums = Math.floor(remainingWeight / weights.mediumSourdough);
+                    batchMedium += extraMediums;
 
                     resultText += `${batchLabel}: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
                     required.largeSourdough -= batchLarge;
                     required.mediumSourdough -= batchMedium;
                     required.smallSourdough -= batchSmall;
-
-                    // Adjust remaining weight to mediums to finish out the batch
-                    if (remainingWeight > 0) {
-                        let extraMediums = Math.floor(remainingWeight / weights.mediumSourdough);
-                        resultText += `Finished with ${extraMediums} medium\n`;
-                        totalSourdoughWeight -= remainingWeight;
-                    }
 
                     totalSourdoughWeight -= batchSizes.sourdough[i];
                 }
