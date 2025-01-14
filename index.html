@@ -184,7 +184,6 @@
 
             // Sourdough batches
             const sourdoughBatches = [];
-
             let sourdoughOunces =
                 bakeNeeded.largeSourdough * itemWeights.largeSourdough +
                 bakeNeeded.mediumSourdough * itemWeights.mediumSourdough +
@@ -206,10 +205,6 @@
                 const batch = { small: 0, medium: 0, large: 0 };
                 let remaining = batchWeights.sourdough[batchType];
 
-                batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
-                remaining -= batch.large * itemWeights.largeSourdough;
-                bakeNeeded.largeSourdough -= batch.large;
-
                 batch.medium = Math.min(Math.floor(remaining / itemWeights.mediumSourdough), bakeNeeded.mediumSourdough);
                 remaining -= batch.medium * itemWeights.mediumSourdough;
                 bakeNeeded.mediumSourdough -= batch.medium;
@@ -217,6 +212,10 @@
                 batch.small = Math.min(Math.floor(remaining / itemWeights.smallSourdough), bakeNeeded.smallSourdough);
                 remaining -= batch.small * itemWeights.smallSourdough;
                 bakeNeeded.smallSourdough -= batch.small;
+
+                batch.large = Math.min(Math.floor(remaining / itemWeights.largeSourdough), bakeNeeded.largeSourdough);
+                remaining -= batch.large * itemWeights.largeSourdough;
+                bakeNeeded.largeSourdough -= batch.large;
 
                 sourdoughBatches.push({ batchType, ...batch });
             }
@@ -227,7 +226,6 @@
 
             // Jalapeño Cheddar batches
             const jalapenoBatches = [];
-
             let jalapenoOunces =
                 bakeNeeded.smallJC * itemWeights.smallJC +
                 bakeNeeded.mediumJC * itemWeights.mediumJC;
@@ -262,7 +260,6 @@
 
             // Pizza batches
             const pizzaBatches = [];
-
             let pizzaOunces =
                 bakeNeeded.pizza8 * itemWeights.pizza8 +
                 bakeNeeded.pizza10 * itemWeights.pizza10;
