@@ -42,7 +42,8 @@
             background-color: #f9f9f9;
             border: 1px solid #ddd;
             border-radius: 5px;
-            text-align: center;
+            text-align: left;
+            white-space: pre-wrap;
         }
 
         .button-group {
@@ -130,8 +131,8 @@
         };
 
         const batchSizes = {
-            sourdough: 344,
-            jalapeno: 172,
+            sourdough: [414, 344, 172], // 1.25, 1, 0.5 batches
+            jalapeno: [172, 122], // 0.5, 0.25 batches
             pizza: 237.5
         };
 
@@ -177,46 +178,48 @@
                 smallJC: Math.max(0, minimums.smallJC - counts.smallJC)
             };
 
-            // Calculate batches for pizzas
+            let resultText = '';
+
+            // Calculate pizza batches
             let totalPizzaWeight = required.pizza8 * weights.pizza8 + required.pizza10 * weights.pizza10;
-            let pizzaBatches = Math.ceil(totalPizzaWeight / batchSizes.pizza);
-            let pizzaBatchDetails = {
-                "8\" Pizzas": Math.floor(batchSizes.pizza / weights.pizza8),
-                "10\" Pizzas": Math.floor(batchSizes.pizza / weights.pizza10)
-            };
+            while (totalPizzaWeight > 0) {
+                let batch8 = Math.min(Math.floor(batchSizes.pizza / weights.pizza8), Math.ceil(required.pizza8));
+                let batch10 = Math.min(Math.floor((batchSizes.pizza - batch8 * weights.pizza8) / weights.pizza10), Math.ceil(required.pizza10));
+                resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
+                required.pizza8 -= batch8;
+                required.pizza10 -= batch10;
+                totalPizzaWeight -= batchSizes.pizza;
+            }
 
-            // Calculate batches for sourdough
-            let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough +
-                required.mediumSourdough * weights.mediumSourdough +
-                required.smallSourdough * weights.smallSourdough;
+            // Calculate sourdough batches
+            let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough + required.mediumSourdough * weights.mediumSourdough + required.smallSourdough * weights.smallSourdough;
+            for (let size of batchSizes.sourdough) {
+                while (totalSourdoughWeight >= size) {
+                    let batchLarge = Math.min(Math.floor(size / weights.largeSourdough), Math.ceil(required.largeSourdough));
+                    let batchMedium = Math.min(Math.floor((size - batchLarge * weights.largeSourdough) / weights.mediumSourdough), Math.ceil(required.mediumSourdough));
+                    let batchSmall = Math.min(Math.floor((size - batchLarge * weights.largeSourdough - batchMedium * weights.mediumSourdough) / weights.smallSourdough), Math.ceil(required.smallSourdough));
+                    resultText += `Sourdough Batch: ${batchSmall} small, ${batchMedium} medium, ${batchLarge} large\n`;
+                    required.largeSourdough -= batchLarge;
+                    required.mediumSourdough -= batchMedium;
+                    required.smallSourdough -= batchSmall;
+                    totalSourdoughWeight -= size;
+                }
+            }
 
-            let sourdoughBatches = Math.ceil(totalSourdoughWeight / batchSizes.sourdough);
-            let sourdoughBatchDetails = {
-                "Large Sourdough Buns": Math.floor(batchSizes.sourdough / weights.largeSourdough),
-                "Medium Sourdough Buns": Math.floor(batchSizes.sourdough / weights.mediumSourdough),
-                "Small Sourdough Buns": Math.floor(batchSizes.sourdough / weights.smallSourdough)
-            };
-
-            // Calculate batches for jalapeño cheddar
+            // Calculate jalapeno batches
             let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
-            let jalapenoBatches = Math.ceil(totalJalapenoWeight / batchSizes.jalapeno);
-            let jalapenoBatchDetails = {
-                "Small Jalapeño Cheddar Buns": Math.floor(batchSizes.jalapeno / weights.smallJC),
-                "Medium Jalapeño Cheddar Buns": Math.floor(batchSizes.jalapeno / weights.mediumJC)
-            };
+            for (let size of batchSizes.jalapeno) {
+                while (totalJalapenoWeight >= size) {
+                    let batchSmallJC = Math.min(Math.floor(size / weights.smallJC), Math.ceil(required.smallJC));
+                    let batchMediumJC = Math.min(Math.floor((size - batchSmallJC * weights.smallJC) / weights.mediumJC), Math.ceil(required.mediumJC));
+                    resultText += `Jalapeno Batch: ${batchSmallJC} small, ${batchMediumJC} medium\n`;
+                    required.smallJC -= batchSmallJC;
+                    required.mediumJC -= batchMediumJC;
+                    totalJalapenoWeight -= size;
+                }
+            }
 
-            // Display results
-            document.getElementById('result').innerText =
-                `Pizza Batches: ${pizzaBatches}\n` +
-                ` - 8\" Pizzas per Batch: ${pizzaBatchDetails["8\" Pizzas"]}\n` +
-                ` - 10\" Pizzas per Batch: ${pizzaBatchDetails["10\" Pizzas"]}\n` +
-                `Sourdough Batches: ${sourdoughBatches}\n` +
-                ` - Large Sourdough Buns per Batch: ${sourdoughBatchDetails["Large Sourdough Buns"]}\n` +
-                ` - Medium Sourdough Buns per Batch: ${sourdoughBatchDetails["Medium Sourdough Buns"]}\n` +
-                ` - Small Sourdough Buns per Batch: ${sourdoughBatchDetails["Small Sourdough Buns"]}\n` +
-                `Jalapeño Batches: ${jalapenoBatches}\n` +
-                ` - Small Jalapeño Cheddar Buns per Batch: ${jalapenoBatchDetails["Small Jalapeño Cheddar Buns"]}\n` +
-                ` - Medium Jalapeño Cheddar Buns per Batch: ${jalapenoBatchDetails["Medium Jalapeño Cheddar Buns"]}`;
+            document.getElementById('result').innerText = resultText;
         });
     </script>
 </body>
