@@ -227,7 +227,7 @@
             // Correct sourdough batch logic
             let totalSourdoughWeight = required.largeSourdough * weights.largeSourdough + required.mediumSourdough * weights.mediumSourdough + required.smallSourdough * weights.smallSourdough;
             for (let i = 0; i < batchSizes.sourdough.length; i++) {
-                while (totalSourdoughWeight >= batchSizes.sourdough[i] || (i === 1 && required.smallSourdough >= 80)) {
+                while (totalSourdoughWeight >= batchSizes.sourdough[i] || (i === 1 && required.smallSourdough > 0)) {
                     let batchLabel = i === 0 ? "1.25 Sourdough Batch" : i === 1 ? "1 Sourdough Batch" : "0.5 Sourdough Batch";
                     let batchLarge = Math.min(Math.floor(batchSizes.sourdough[i] / weights.largeSourdough), required.largeSourdough);
                     let remainingWeight = batchSizes.sourdough[i] - batchLarge * weights.largeSourdough;
@@ -246,7 +246,7 @@
             // Correct jalapeno batch logic
             let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
             for (let i = 0; i < batchSizes.jalapeno.length; i++) {
-                while (totalJalapenoWeight >= batchSizes.jalapeno[i]) {
+                while (totalJalapenoWeight >= batchSizes.jalapeno[i] || (i === 1 && (required.smallJC > 0 || required.mediumJC > 0))) {
                     let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
                     let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
                     let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
