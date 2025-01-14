@@ -252,11 +252,16 @@
             // Correct jalapeno batch logic
             let totalJalapenoWeight = required.smallJC * weights.smallJC + required.mediumJC * weights.mediumJC;
             for (let i = 0; i < batchSizes.jalapeno.length; i++) {
-                while (totalJalapenoWeight >= batchSizes.jalapeno[i] || required.smallJC > 0 || required.mediumJC > 0) {
+                while (totalJalapenoWeight >= batchSizes.jalapeno[i] || (i === 1 && (required.smallJC > 0 || required.mediumJC > 0))) {
                     let batchLabel = i === 0 ? "0.5 Jalapeno Batch" : "0.25 Jalapeno Batch";
                     let batchSmallJC = Math.min(Math.floor(batchSizes.jalapeno[i] / weights.smallJC), required.smallJC);
                     let remainingWeight = batchSizes.jalapeno[i] - batchSmallJC * weights.smallJC;
                     let batchMediumJC = Math.min(Math.floor(remainingWeight / weights.mediumJC), required.mediumJC);
+                    remainingWeight -= batchMediumJC * weights.mediumJC;
+
+                    // Add any remaining weight to medium buns
+                    let extraMediumJCs = Math.floor(remainingWeight / weights.mediumJC);
+                    batchMediumJC += extraMediumJCs;
 
                     resultText += `${batchLabel}: ${batchSmallJC} small, ${batchMediumJC} medium\n`;
                     required.smallJC -= batchSmallJC;
