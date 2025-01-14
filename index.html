@@ -185,8 +185,7 @@
             while (totalPizzaWeight > 0) {
                 let batch8 = Math.min(Math.floor(batchSizes.pizza / weights.pizza8), required.pizza8);
                 let remainingWeight = batchSizes.pizza - batch8 * weights.pizza8;
-                let batch10 = Math.min(Math.floor(remainingWeight / weights.pizza10), required.pizza10);
-                batch10 += Math.floor(remainingWeight / weights.pizza10); // Ensure remaining weight finishes as 10"
+                let batch10 = Math.floor(remainingWeight / weights.pizza10);
 
                 resultText += `Pizza Batch: ${batch8} - 8\", ${batch10} - 10\"\n`;
                 required.pizza8 -= batch8;
