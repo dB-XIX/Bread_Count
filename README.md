@@ -7,7 +7,7 @@ The **Batch Calculator** is a web-based application designed to help users effic
 - Calculate baking batches for:
   - 8" and 10" pizzas
   - Large, medium, and small sourdough buns
-  - Medium and small jalapeño cheddar buns 
+  - Medium and small jalapeño cheddar buns
 - Dynamically adjusts calculations based on user input for on-hand quantities.
 - Ensures minimum requirements are met for each type of bread and pizza dough.
 - Optimizes batch sizes to reduce waste and improve efficiency.
