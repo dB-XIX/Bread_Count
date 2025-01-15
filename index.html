@@ -42,14 +42,13 @@
         }
 
         input {
-            width: calc(100% - 20px);
+            width: 100%;
             padding: 10px;
             font-size: 16px;
             border: 1px solid #6B4226;
             border-radius: 8px;
             background-color: #FDF6F0;
             box-shadow: inset 0px 2px 5px rgba(0, 0, 0, 0.1);
-            margin-left: 10px;
         }
 
         #result {
@@ -106,6 +105,10 @@
                 button#clear:hover {
                     background-color: #932E30;
                 }
+
+        .form-group input {
+            max-width: 100%;
+        }
     </style>
 </head>
 <body>
