@@ -64,9 +64,6 @@ Pizza Batch: 20 - 8", 15 - 10"
 ## Author
 This program was created to provide an efficient solution for calculating baking batches. The focus was on developing a functional, user-friendly tool that meets the needs of its users while overcoming technical challenges.
 
-## License
-This project is licensed under the [MIT License](LICENSE).
-
 ---
 Thank you for using the **Batch Calculator**! Feel free to contribute or share feedback to make it even better.
 
