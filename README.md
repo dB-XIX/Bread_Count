@@ -1,7 +1,7 @@
 # Batch Calculator
 
 ## Overview
-The **Batch Calculator** is a web-based application designed to help users efficiently calculate the required baking batches for various types of bread and pizza dough. The program ensures that minimum requirements are met while optimizing the batch sizes for maximum efficiency. This tool is ideal for bakers and production teams looking to streamline their batch planning process.
+The **Batch Calculator** is a web-based application designed to help users efficiently calculate the required baking batches for various types of bread and pizza dough. The program ensures that minimum requirements are met while optimizing the batch sizes for maximum efficiency. I developed this program while working as a baker at my local Schlotzsky's to streamline the batch planning process. Therefore, it is only applicable to a Schlotzsky's restaurant.
 
 ## Features
 - Calculate baking batches for:
